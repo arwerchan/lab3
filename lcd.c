@@ -155,7 +155,11 @@ void moveCursorLCD(unsigned char x, unsigned char y) {
 
     }
     if (x == 1) {
+<<<<<<< HEAD
         writeLCD(0xC0 + y, LCD_CONTROL_DATA, 40);
+=======
+        writeLCD(0xc0 + y, LCD_CONTROL_DATA, 40);
+>>>>>>> bd8e35b3305a6c8d6b6f1f365d4770c6eb1aba8a
     }
 
 }
