@@ -48,4 +48,3 @@
 #pragma config CP = OFF                 // Code Protect (Protection Disabled)
 
 #endif	/* CONFIG_H */
-

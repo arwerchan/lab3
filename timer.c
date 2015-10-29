@@ -31,3 +31,12 @@ void initTimer2() {
     IFS0bits.T2IF = 0; //put flag down
 
 }
+
+
+void initTimer3() {
+    TMR3 = 0; //clear timer 2
+    T3CONbits.TCKPS = 1; //initial prescalar to 8
+    T3CONbits.TCS = 0; //setting the oscillator
+    PR3 = 1024;
+    T3CONbits.ON = 1; //turn on timer 2
+}
