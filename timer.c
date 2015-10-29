@@ -5,6 +5,7 @@
  * Created on December 30, 2014, 8:07 PM
  */
 
+#include "timer.h"
 #include <xc.h>
 
 
