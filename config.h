@@ -14,8 +14,8 @@
 // DEVCFG3
 // USERID = No Setting
 #pragma config FSRSSEL = PRIORITY_7     // Shadow Register Set Priority Select (SRS Priority 7)
-#pragma config PMDL1WAY = ON            // Peripheral Module Disable Configuration (Allow only one reconfiguration)
-#pragma config IOL1WAY = ON             // Peripheral Pin Select Configuration (Allow only one reconfiguration)
+#pragma config PMDL1WAY = OFF            // Peripheral Module Disable Configuration (Allow only one reconfiguration)
+#pragma config IOL1WAY = OFF             // Peripheral Pin Select Configuration (Allow only one reconfiguration)
 #pragma config FUSBIDIO = OFF            // USB USID Selection (Controlled by the USB Module)
 #pragma config FVBUSONIO = OFF           // USB VBUS ON Selection (Controlled by USB Module)
 
