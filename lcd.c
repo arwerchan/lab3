@@ -11,15 +11,15 @@
 #include "lcd.h"
 #include "timer.h"
 
-#define LCD_E  LATDbits.LATD1
-#define LCD_RS   LATDbits.LATD9
+#define LCD_E  LATCbits.LATC13
+#define LCD_RS   LATDbits.LATD3
 
 #define TRIS_D7  TRISEbits.TRISE7
 #define TRIS_D6  TRISEbits.TRISE5
 #define TRIS_D5  TRISEbits.TRISE3
 #define TRIS_D4  TRISEbits.TRISE1
-#define TRIS_E   TRISDbits.TRISD1
-#define TRIS_RS  TRISDbits.TRISD9
+#define TRIS_E   TRISCbits.TRISC13
+#define TRIS_RS  TRISDbits.TRISD3
 
 #define LAT_4 LATEbits.LATE1
 #define LAT_5 LATEbits.LATE3
@@ -155,11 +155,7 @@ void moveCursorLCD(unsigned char x, unsigned char y) {
 
     }
     if (x == 1) {
-<<<<<<< HEAD
-        writeLCD(0xC0 + y, LCD_CONTROL_DATA, 40);
-=======
         writeLCD(0xc0 + y, LCD_CONTROL_DATA, 40);
->>>>>>> bd8e35b3305a6c8d6b6f1f365d4770c6eb1aba8a
     }
 
 }
@@ -183,4 +179,3 @@ void testLCD() {
     clearLCD();
     
 }
-

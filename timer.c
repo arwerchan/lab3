@@ -5,6 +5,7 @@
  * Created on December 30, 2014, 8:07 PM
  */
 
+#include "timer.h"
 #include <xc.h>
 
 
@@ -29,4 +30,13 @@ void initTimer2() {
     IPC2bits.T2IP=7;// configure the interrupt priority 
     IFS0bits.T2IF = 0; //put flag down
 
+}
+
+
+void initTimer3() {
+    TMR3 = 0; //clear timer 2
+    T3CONbits.TCKPS = 1; //initial prescalar to 8
+    T3CONbits.TCS = 0; //setting the oscillator
+    PR3 = 1024;
+    T3CONbits.ON = 1; //turn on timer 2
 }
