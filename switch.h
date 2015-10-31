@@ -10,6 +10,7 @@
 
 void initSW1();
 void initSW2();
+void initSW3();
 
 
 #endif	/* SWITCH_H */

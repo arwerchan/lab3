@@ -1,3 +1,4 @@
+
 #include <xc.h>
 #include "adc.h"
 
@@ -20,8 +21,8 @@ void initADC(){
     AD1CHSbits.CH0NA = 0; // Use Vref- as negative reference 
     AD1CHSbits.CH0SA = 0; // Scan AN0 at least 
     IFS0bits.AD1IF = 0; // Put down ADC flag 
-    IPC5bits.AD1IP = 7; 
-    IEC0bits.AD1IE = 1; 
+    //IPC5bits.AD1IP = 7; 
+    //IEC0bits.AD1IE = 0; 
     AD1CON1bits.ADON = 1; // turn on the ADC 
 
 }

@@ -15,7 +15,7 @@
 #include "config.h"
 #include "interrupt.h"
 #include "switch.h"
-#define SW PORTAbits.RA7
+#define SW PORTDbits.RD13
 #define press 0
 #define release 1
 #define enableForward LATDbits.LATD12
@@ -39,6 +39,7 @@ int main(void) {
     TRISDbits.TRISD6 = output;
     TRISDbits.TRISD12 = output;
     index = 0;
+    int j=0;
 
     SYSTEMConfigPerformance(40000000);
 
@@ -48,13 +49,12 @@ int main(void) {
     initTimer3();
     initLCD();
     clearLCD();
-    initSW2();
-    //initSW1();
-    // initPWM2();
-    // initPWM1();
+    //initSW2();
+    initSW1();
+    //initSW3();
     initPWM3();
     initPWM4();
-    enableInterrupts();
+    //enableInterrupts();
 
     AD1CON1bits.ADON = 0; // turn on the ADC 
 
@@ -65,13 +65,28 @@ int main(void) {
                 break;
             case scan:
                 AD1CON1bits.ADON = 1; // turn on the ADC 
+                if(IFS0bits.AD1IF == 1){
+                    if (ADC1BUF0 < 612 && ADC1BUF0 > 412) {
+                        OC5RS = 1023;
+                        OC1RS = 1023;
+                    } else if (ADC1BUF0 >= 612) {
+                        OC5RS = 1023 - ADC1BUF0;
+                        OC1RS = 1023;
+                    } else if (ADC1BUF0 <= 412) {
+                        OC5RS = 1023;
+                        OC1RS = ADC1BUF0;
+                    }
+                    val = ADC1BUF0;
+                    //AD1CON1bits.ADON = 0; // turn on the ADC
+                }
+                state = print;
                 break;
             case print:
                 moveCursorLCD(0, 0);
                 currval = (val * 3.3) / (1023);
                 sprintf(string, "%.2f", currval);
                 printStringLCD(string);
-                state = wait;
+                state = Idle;
                 break;
 
             case forward:
@@ -80,6 +95,9 @@ int main(void) {
                 //enableBackward = 0;
                 //enableForward = 1;
                 index = 1;
+                for(j=0; j<10000;j++){
+                delayUs(100);
+                }
                 state = wait;
                 break;
             case Idle:
@@ -87,6 +105,14 @@ int main(void) {
                 RPD5Rbits.RPD5R = 0;
                 RPD12Rbits.RPD12R = 0;
                 RPD1Rbits.RPD1R = 0;
+                for(j=0; j<10000;j++){
+                delayUs(100);
+                }
+                if (index == 1) {
+                    state = backward;
+                } else if (index == 0) {
+                    state = forward;
+                }
                 break;
 
             case backward:
@@ -95,6 +121,9 @@ int main(void) {
                 //enableBackward = 1;
                 //enableForward = 0;
                 index = 0;
+                for(j=0; j<10000;j++){
+                delayUs(100);
+                }
                 state = wait;
                 break;
 
@@ -104,58 +133,49 @@ int main(void) {
     return 0;
 }
 
-void __ISR(_ADC_VECTOR, IPL7AUTO) _ADCInterrupt(void) {
+//void __ISR(_ADC_VECTOR, IPL7AUTO) _ADCInterrupt(void) {
+//
+//    IFS0bits.AD1IF = 0;
+//    //
+//    //if(index == 1){
+//    //OC5RS = 0;
+//    //OC1RS = 0;
+//    //    if(ADC1BUF0 < 612 && ADC1BUF0 > 412){
+//    //        OC3RS = 1023;
+//    //        OC2RS = 1023;
+//    //    }
+//    //    else if(ADC1BUF0 >= 612){
+//    //        OC3RS = 1023 - ADC1BUF0;
+//    //        OC2RS = 1023;
+//    //    }
+//    //    else if(ADC1BUF0 <= 412){
+//    //        OC3RS = 1023;
+//    //        OC2RS = ADC1BUF0;
+//    //    }
+//    // }
+//    //else{
+//    //  OC2RS = 0;
+//    //OC3RS = 0;
+//
+//    // }
+//
+//    val = ADC1BUF0;
+//    state = print;
+//    AD1CON1bits.ADON = 0; // turn on the ADC 
+//}
 
-    IFS0bits.AD1IF = 0;
-    //
-    //if(index == 1){
-    //OC5RS = 0;
-    //OC1RS = 0;
-    //    if(ADC1BUF0 < 612 && ADC1BUF0 > 412){
-    //        OC3RS = 1023;
-    //        OC2RS = 1023;
-    //    }
-    //    else if(ADC1BUF0 >= 612){
-    //        OC3RS = 1023 - ADC1BUF0;
-    //        OC2RS = 1023;
-    //    }
-    //    else if(ADC1BUF0 <= 412){
-    //        OC3RS = 1023;
-    //        OC2RS = ADC1BUF0;
-    //    }
-    // }
-    //else{
-    //  OC2RS = 0;
-    //OC3RS = 0;
-    if (ADC1BUF0 < 612 && ADC1BUF0 > 412) {
-        OC5RS = 1023;
-        OC1RS = 1023;
-    } else if (ADC1BUF0 >= 612) {
-        OC5RS = 1023 - ADC1BUF0;
-        OC1RS = 1023;
-    } else if (ADC1BUF0 <= 412) {
-        OC5RS = 1023;
-        OC1RS = ADC1BUF0;
-    }
-    // }
-    //
-    val = ADC1BUF0;
-    state = print;
-    AD1CON1bits.ADON = 0; // turn on the ADC 
-}
-
-void __ISR(_CHANGE_NOTICE_VECTOR, IPL7SRS) _CNInterrupt(void) {
-    int dummy;
-    dummy = SW;
-    //IFS1bits.CNGIF = 0;
-    IFS1bits.CNAIF = 0;
-    if (SW == press) {
-        state = Idle;
-    } else if (SW == release) {
-        if (index == 1) {
-            state = backward;
-        } else if (index == 0) {
-            state = forward;
-        }
-    }
-}
+//void __ISR(_CHANGE_NOTICE_VECTOR, IPL7SRS) _CNInterrupt(void) {
+//    int dummy;
+//    dummy = SW;
+//    //IFS1bits.CNGIF = 0;
+//    IFS1bits.CNDIF = 0;
+//    if (SW == press) {
+//        state = Idle;
+//    } else if (SW == release) {
+//        if (index == 1) {
+//            state = backward;
+//        } else if (index == 0) {
+//            state = forward;
+//        }
+//    }
+//}
